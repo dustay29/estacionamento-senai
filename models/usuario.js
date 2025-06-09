@@ -37,7 +37,11 @@ const Usuarios = database.define('Usuarios', {
     tipo_usuario: {
         type: DataTypes.ENUM('Aluno', 'Professor', 'Funcionário', 'Visitante'),
         allowNull: false
-  }
+  },
+    senha: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
 })
 
 export {Usuarios}
