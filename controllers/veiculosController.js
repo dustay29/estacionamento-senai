@@ -1,4 +1,4 @@
-import { Veiculo } from '../models/Veiculos.js'
+import { Veiculo } from '../models/veiculo.js'
 
 export const listarVeiculos = async (req, res) => {
     const veiculos = await Veiculo.findAll({ where: { usuario_id: req.usuarioId } })
