@@ -43,4 +43,4 @@ Veiculos.belongsTo(Usuarios, {
     foreignKey: 'id_usuario'
 })
 
-export { Veiculos }
+export { Veiculos ,Usuarios}
