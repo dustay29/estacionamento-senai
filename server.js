@@ -8,8 +8,14 @@ app.use(cors());
 // Importar a conexao criada com sequelize
 import {database} from './database.js'
 import { router } from './routes/routes.js'
+import { Acesso } from './models/acesso.js';
+import { Usuarios } from './models/usuario.js';
+import { Veiculos } from './models/veiculo.js';
+
+
 // ultilizando json
 app.use(express.json());
+app.use(router)
 // futuro uso do router app.use(router)
 
 try{

@@ -14,7 +14,7 @@ export const login = async (req, res) => {
             return res.status(400).json({ erro: "Email e senha são obrigatórios." });
         }
 
-        const usuario = await Usuario.findOne({ where: { email } });
+        const usuario = await Usuarios.findOne({ where: { email } });
 
         if (!usuario) {
             return res.status(401).json({ mensagem: 'Credenciais inválidas' });
@@ -49,14 +49,14 @@ export const cadastrarUsuario = async (req, res) => {
       return res.status(400).json({ erro: "Dados incompletos." });
     }
 
-    const existe = await Usuario.findOne({ where: { email } });
+    const existe = await Usuarios.findOne({ where: { email } });
     if (existe) {
       return res.status(400).json({ mensagem: "E-mail já cadastrado." });
     }
 
     const senhaHash = await bcrypt.hash(senha, 10);
 
-    const novoUsuario = await Usuario.create({
+    const novoUsuario = await Usuarios.create({
       nome,
       cpf,
       telefone,

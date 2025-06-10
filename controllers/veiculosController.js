@@ -1,7 +1,7 @@
 import { Veiculos } from '../models/veiculo.js'
 
 export const listarVeiculos = async (req, res) => {
-    const veiculos = await Veiculo.findAll({ where: { usuario_id: req.usuarioId } })
+    const veiculos = await Veiculos.findAll({ where: { usuario_id: req.usuarioId } })
     res.json(veiculos)
 }
 
@@ -16,15 +16,15 @@ export const atualizarVeiculo = async (req, res) => {
     const veiculos = await Veiculo.findOne({ where: { id, usuario_id: req.usuarioId } })
     if (!veiculos) return res.status(404).json({ mensagem: 'Veiculo não encontrado' })
 
-    await veiculos.update(req.body)
+    await Veiculos.update(req.body)
     res.json(veiculos)
 }
 
 export const removerVeiculo = async (req, res) => {
     const { id } = req.params
-    const veiculos = await Veiculo.findOne({ where: { id, usuario_id: req.usuarioId } })
+    const veiculos = await Veiculos.findOne({ where: { id, usuario_id: req.usuarioId } })
     if (!veiculos) return res.status(404).json({ mensagem: 'Veiculo não encontrado' })
 
-    await veiculos.destroy()
+    await Veiculos.destroy()
     res.status(204).send()
 }
