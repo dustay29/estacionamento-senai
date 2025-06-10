@@ -3,7 +3,7 @@ import { database } from "../database.js"
 // importando os datatypes
 import { DataTypes } from "sequelize"
 // importando o modelo de Veículos
-import { Veiculos } from "./veiculos.js"
+import { Veiculos } from "./veiculo.js"
 
 // criando a tabela Acesso
 const Acesso = database.define("Acesso", {
