@@ -1,25 +1,16 @@
-import express from 'express';
+import express from 'express'
 import 'dotenv/config'
 import cors from 'cors'
-// importando  express em uma variavel
-const app = express();
-//autorizando uso pelo corns
-app.use(cors());
-// Importar a conexao criada com sequelize
-// import {database} from './database.js'
-// import { router } from './routes/routes.js'
-// ultilizando json
-app.use(express.json());
-// futuro uso do router app.use(router)
+import acessoRoutes from './routes/acessoRoutes.js' // ✅
+const app = express()
 
-try{
-   // await Tarefa.sync({ alter: true })
-    // await Heroi.sync({ force: true })
-} catch(erro){
-    console.log(erro)
-}
+app.use(cors())
+app.use(express.json())
 
-const PORT = process.env.PORT;
+// Conectar as rotas
+app.use("/acesso", acessoRoutes) // ✅
+
+const PORT = process.env.PORT
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`)
+  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`)
 })
