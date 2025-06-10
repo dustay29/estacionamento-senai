@@ -1,6 +1,6 @@
 // controllers/acessoController.js
 import { Acesso } from "../models/acesso.js";
-import { Veiculos } from "../models/veiculos.js";
+import { Veiculos } from "../models/veiculo.js";
 
 // Registrar entrada
 export async function registrarEntrada(req, res) {

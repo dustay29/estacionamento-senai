@@ -1,3 +1,9 @@
+// importando o banco de dados
+import {database} from "../database.js"
+// importando p datatypes
+import { DataTypes } from "sequelize"
+import {Usuarios} from "./usuario.js"
+// criando a tabela usuarios
 const Veiculos = database.define('Veiculos', {
     id_veiculo: {
       primaryKey: true,
@@ -36,3 +42,4 @@ const Veiculos = database.define('Veiculos', {
     }
   })
   
+  export {Veiculos}

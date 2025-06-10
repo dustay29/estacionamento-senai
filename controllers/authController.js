@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken'
 // importando o bcrypt para criptografar senhas
 import bcrypt from "bcrypt";
 // importando usuarios
-import { Usuario } from '../models/usuario.js'
+import { Usuarios } from '../models/usuario.js'
+
 
 export const login = async (req, res) => {
     try {

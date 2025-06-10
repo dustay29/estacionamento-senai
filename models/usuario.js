@@ -2,6 +2,7 @@
 import {database} from "../database.js"
 // importando p datatypes
 import { DataTypes } from "sequelize"
+
 // criando a tabela usuarios
 const Usuarios = database.define('Usuarios', {
     id_usuario: {

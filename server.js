@@ -6,8 +6,8 @@ const app = express();
 //autorizando uso pelo corns
 app.use(cors());
 // Importar a conexao criada com sequelize
-// import {database} from './database.js'
-// import { router } from './routes/routes.js'
+import {database} from './database.js'
+import { router } from './routes/routes.js'
 // ultilizando json
 app.use(express.json());
 // futuro uso do router app.use(router)
