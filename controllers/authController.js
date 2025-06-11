@@ -71,3 +71,45 @@ export const cadastrarUsuario = async (req, res) => {
     res.status(500).json({ erro: "Erro ao cadastrar usuário." });
   }
 };
+
+export const atualizarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nome, cpf, telefone, email, tipo_usuario, senha } = req.body;
+
+    // Verifica se o usuário existe
+    const usuario = await Usuarios.findByPk(id);
+    if (!usuario) {
+      return res.status(404).json({ erro: "Usuário não encontrado." });
+    }
+
+    // Verifica se o novo email já está sendo usado por outro usuário
+    if (email && email !== usuario.email) {
+      const emailExiste = await Usuarios.findOne({ where: { email } });
+      if (emailExiste) {
+        return res.status(400).json({ erro: "E-mail já está em uso." });
+      }
+    }
+
+    // Atualiza os campos (apenas se enviados)
+    if (nome) usuario.nome = nome;
+    if (cpf) usuario.cpf = cpf;
+    if (telefone) usuario.telefone = telefone;
+    if (email) usuario.email = email;
+    if (tipo_usuario) usuario.tipo_usuario = tipo_usuario;
+
+    // Se a senha for enviada, criptografa antes de atualizar
+    if (senha) {
+      const senhaHash = await bcrypt.hash(senha, 10);
+      usuario.senha = senhaHash;
+    }
+
+    await usuario.save();
+
+    res.json({ mensagem: "Usuário atualizado com sucesso!", usuario });
+
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: "Erro ao atualizar usuário." });
+  }
+};
