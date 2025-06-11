@@ -15,7 +15,7 @@ router.use(autenticar)
 
 // Rotas de acesso (controle de entrada e saída)
 router.post("/acessos/entrada", registrarEntrada)
-router.put("/acessos/saida/:id_acesso", registrarSaida)
+router.post("/acessos/saida/:id_acesso", registrarSaida)
 
 // Rotas de veículos
 router.get('/veiculos', listarVeiculos)  // ok
