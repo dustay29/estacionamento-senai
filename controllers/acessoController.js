@@ -64,3 +64,10 @@ export async function registrarSaida(req, res) {
     return res.status(500).json({ mensagem: "Erro no servidor" });
   }
 }
+
+// listar todosos acessos 
+
+export const listarAcessos = async (req, res) => {
+    const acesso = await Acesso.findAll()
+    res.json(acesso)
+}
