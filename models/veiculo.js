@@ -27,11 +27,6 @@ const Veiculos = database.define('Veiculos', {
       type: DataTypes.ENUM("Carro", "Moto", "Outro"),
       allowNull: false
     },
-    autorizado: {
-      type: DataTypes.ENUM("Sim", "Não"),
-      allowNull: false,
-      defaultValue: "Não"
-    },
     id_usuario: {
       type: DataTypes.INTEGER,
       allowNull: false,

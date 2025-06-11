@@ -19,8 +19,9 @@ app.use(router)
 // futuro uso do router app.use(router)
 
 try{
-   // await Tarefa.sync({ alter: true })
-    // await Heroi.sync({ force: true })
+  //  await Usuarios.sync({ alter: true })
+  //   await Veiculos.sync({ alter: true })
+  //   await Acesso.sync({alter:true})
 } catch(erro){
     console.log(erro)
 }
