@@ -1,6 +1,6 @@
 import express from 'express'
 import { login, cadastrarUsuario } from '../controllers/authController.js'
-import { listarVeiculos, criarVeiculo, atualizarVeiculo, removerVeiculo } from '../controllers/veiculosController.js'
+import { listarVeiculos, cadastrarVeiculo, atualizarVeiculo, removerVeiculo } from '../controllers/veiculosController.js'
 import { registrarEntrada, registrarSaida } from "../controllers/acessoController.js"
 import { autenticar } from '../middlewares/middleware.js'
 
@@ -18,7 +18,7 @@ router.post("/acessos/entrada", registrarEntrada)
 router.put("/acessos/saida/:id_acesso", registrarSaida)
 
 // Rotas de veículos
-router.get('/veiculos', listarVeiculos)
-router.post('/veiculos', criarVeiculo)
-router.put('/veiculos/:id', atualizarVeiculo)
-router.delete('/veiculos/:id', removerVeiculo)
+router.get('/veiculos', listarVeiculos)  // ok
+router.post('/veiculos', cadastrarVeiculo)  //ok
+router.put('/veiculos/:id', atualizarVeiculo) // ok
+router.delete('/veiculos/:id', removerVeiculo) // ok
