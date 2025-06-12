@@ -3,6 +3,7 @@ import { login, cadastrarUsuario, atualizarUsuario, removerUsuario} from '../con
 import { listarVeiculos, cadastrarVeiculo, atualizarVeiculo, removerVeiculo } from '../controllers/veiculosController.js'
 import { registrarEntrada, registrarSaida } from "../controllers/acessoController.js"
 import { autenticar } from '../middlewares/middleware.js'
+import {visualizarVagas, listarAcessos} from '../controllers/relatoriosController.js'
 
 export const router = express.Router()
 
