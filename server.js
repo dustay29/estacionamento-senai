@@ -11,6 +11,8 @@ import { router } from './routes/routes.js'
 import { Acesso } from './models/acesso.js';
 import { Usuarios } from './models/usuario.js';
 import { Veiculos } from './models/veiculo.js';
+import { Vagas } from './models/vagas.js';
+// Conectar ao banco de dados
 
 
 // ultilizando json
@@ -19,9 +21,12 @@ app.use(router)
 // futuro uso do router app.use(router)
 
 try{
-  //  await Usuarios.sync({ alter: true })
-  //   await Veiculos.sync({ alter: true })
-  //   await Acesso.sync({alter:true})
+    await Usuarios.sync({ alter: true })
+     await Veiculos.sync({ alter: true })
+     await Acesso.sync({alter:true})
+  await Vagas.sync({ alter: true });
+
+  
 } catch(erro){
     console.log(erro)
 }

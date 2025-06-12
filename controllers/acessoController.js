@@ -1,6 +1,6 @@
-// controllers/acessoController.js
 import { Acesso } from "../models/acesso.js";
 import { Veiculos } from "../models/veiculo.js";
+import { Vagas } from "../models/vagas.js";
 
 // Registrar entrada
 export async function registrarEntrada(req, res) {
@@ -13,12 +13,20 @@ export async function registrarEntrada(req, res) {
       return res.status(404).json({ mensagem: "Veículo não encontrado" });
     }
 
-    // Aqui você define sua regra de autorização
     const autorizado = veiculo.autorizado === "Sim" ? "Sim" : "Não";
-
     let motivo_bloqueio = null;
+
     if (autorizado === "Não") {
-      motivo_bloqueio = "Veículo não autorizado"; // ou outro motivo baseado em regras
+      motivo_bloqueio = "Veículo não autorizado";
+    } else {
+      const vagas = await Vagas.findOne();
+      if (vagas.vagas_ocupadas >= vagas.total_vagas) {
+        motivo_bloqueio = "Lotação";
+        autorizado = "Não";
+      } else {
+        vagas.vagas_ocupadas += 1;
+        await vagas.save();
+      }
     }
 
     const novoAcesso = await Acesso.create({
@@ -28,7 +36,6 @@ export async function registrarEntrada(req, res) {
       data_hora_entrada: new Date(),
     });
 
-    // Simular liberação de portão
     if (autorizado === "Sim") {
       console.log("Portão liberado para entrada!");
     }
@@ -58,9 +65,28 @@ export async function registrarSaida(req, res) {
     acesso.data_hora_saida = new Date();
     await acesso.save();
 
+    const vagas = await Vagas.findOne();
+    vagas.vagas_ocupadas -= 1;
+    await vagas.save();
+
     return res.status(200).json({ mensagem: "Saída registrada", acesso });
   } catch (error) {
     console.error("Erro ao registrar saída:", error);
     return res.status(500).json({ mensagem: "Erro no servidor" });
+  }
+}
+
+// Visualizar vagas disponíveis
+export async function visualizarVagas(req, res) {
+  try {
+    const vagas = await Vagas.findOne();
+    res.json({
+      total_vagas: vagas.total_vagas,
+      vagas_ocupadas: vagas.vagas_ocupadas,
+      vagas_disponiveis: vagas.total_vagas - vagas.vagas_ocupadas,
+    });
+  } catch (error) {
+    console.error("Erro ao visualizar vagas:", error);
+    res.status(500).json({ mensagem: "Erro no servidor" });
   }
 }
