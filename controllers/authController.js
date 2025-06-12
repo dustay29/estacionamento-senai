@@ -137,4 +137,13 @@ export const removerUsuario = async (req, res) => {
     console.error(erro);
     res.status(500).json({ erro: "Erro ao remover usuário." });
   }
+}
+export const listarTodosUsuarios = async (req, res) => {
+  try {
+    const usuarios = await Usuarios.findAll();
+    res.json(usuarios);
+  } catch (erro) {
+    console.error("Erro ao listar usuários:", erro);
+    res.status(500).json({ mensagem: "Erro no servidor ao listar usuários." });
+  }
 };

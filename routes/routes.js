@@ -1,31 +1,34 @@
-import express from 'express'
-import { login, cadastrarUsuario, atualizarUsuario, removerUsuario} from '../controllers/authController.js'
-import { listarVeiculos, cadastrarVeiculo, atualizarVeiculo, removerVeiculo } from '../controllers/veiculosController.js'
-import { registrarEntrada, registrarSaida, visualizarVagas } from "../controllers/acessoController.js"
-import { autenticar } from '../middlewares/middleware.js'
-import { listarAcessos} from '../controllers/relatoriosController.js'
+import express from "express";
+import { login, cadastrarUsuario, atualizarUsuario, removerUsuario } from "../controllers/authController.js";
+import { listarVeiculos, cadastrarVeiculo, atualizarVeiculo, removerVeiculo, listarTodosVeiculos } from "../controllers/veiculosController.js";
+import { registrarEntrada, registrarSaida, visualizarVagas } from "../controllers/acessoController.js";
+import { autenticar, verificarAdmin } from "../middlewares/middleware.js";
+import { listarAcessos } from "../controllers/relatoriosController.js";
+import { listarTodosUsuarios } from "../controllers/authController.js";
 
-export const router = express.Router()
+export const router = express.Router();
 
-//Rotas adminstrativas
+// Rotas administrativas
 router.get("/vagas", visualizarVagas); // Visualizar vagas disponíveis
-router.get("/relatorios/acessos", listarAcessos); // Relatórios de acessos
+router.get("/relatorios/acessos", autenticar, verificarAdmin, listarAcessos); // Relatórios de acessos (somente admin)
+router.get("/usuarios", autenticar, verificarAdmin, listarTodosUsuarios); // Listar todos os usuários (somente admin)
+router.get("/veiculos", autenticar, verificarAdmin, listarTodosVeiculos); // Listar todos os veículos (somente admin)
 
 // Rotas públicas
-router.post('/login', login) // ok
-router.post('/usuarios', cadastrarUsuario) //ok
-router.put('/usuarios/:id', atualizarUsuario) //ok
-router.delete('/usuarios/:id', removerUsuario) //ok
+router.post("/login", login); // ok
+router.post("/usuarios", cadastrarUsuario); // ok
+router.put("/usuarios/:id", atualizarUsuario); // ok
+router.delete("/usuarios/:id", removerUsuario); // ok
 
 // Middleware de autenticação
-router.use(autenticar) //ok
+router.use(autenticar); // ok
 
 // Rotas de acesso (controle de entrada e saída)
-router.post("/acessos/entrada", registrarEntrada)
-router.post("/acessos/saida/:id_acesso", registrarSaida)
+router.post("/acessos/entrada", registrarEntrada);
+router.post("/acessos/saida/:id_acesso", registrarSaida);
 
 // Rotas de veículos
-router.get('/veiculos', listarVeiculos)  // ok
-router.post('/veiculos', cadastrarVeiculo)  //ok
-router.put('/veiculos/:id', atualizarVeiculo) // ok
-router.delete('/veiculos/:id', removerVeiculo) // ok
+router.get("/veiculos", listarVeiculos); // ok
+router.post("/veiculos", cadastrarVeiculo); // ok
+router.put("/veiculos/:id", atualizarVeiculo); // ok
+router.delete("/veiculos/:id", removerVeiculo); // ok
