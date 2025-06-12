@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from "bcrypt";
 // importando usuarios
 import { Usuarios } from '../models/usuario.js'
+import { Veiculos } from '../models/veiculo.js';
 
 
 export const login = async (req, res) => {
@@ -111,5 +112,29 @@ export const atualizarUsuario = async (req, res) => {
   } catch (erro) {
     console.error(erro);
     res.status(500).json({ erro: "Erro ao atualizar usuário." });
+  }
+};
+
+// Função para remover um usuário do banco de dados
+export const removerUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const usuario = await Usuarios.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ erro: "Usuário não encontrado." });
+    }
+
+    // Remove todos os veículos associados ao usuário
+    await Veiculos.destroy({ where: { id_usuario: id } });
+
+    // Agora sim, remove o usuário
+    await usuario.destroy();
+
+    res.json({ mensagem: "Usuário removido com sucesso!" });
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: "Erro ao remover usuário." });
   }
 };
