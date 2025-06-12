@@ -14,6 +14,18 @@ import { Veiculos } from './models/veiculo.js';
 import { Vagas } from './models/vagas.js';
 // Conectar ao banco de dados
 
+try {
+  const vagasExistentes = await Vagas.findOne();
+  if (!vagasExistentes) {
+    await Vagas.create({
+      total_vagas: 100, // Defina o número máximo de vagas aqui
+      vagas_ocupadas: 0,
+    });
+    console.log("Registro de vagas inicializado com sucesso!");
+  }
+} catch (erro) {
+  console.error("Erro ao inicializar registro de vagas:", erro);
+}
 
 // ultilizando json
 app.use(express.json());

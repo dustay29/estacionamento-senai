@@ -74,4 +74,28 @@ export async function registrarSaida(req, res) {
     console.error("Erro ao registrar saída:", error);
     return res.status(500).json({ mensagem: "Erro no servidor" });
   }
+
+  
+}
+
+export async function visualizarVagas(req, res) {
+  try {
+    // Busca o registro de vagas no banco de dados
+    const vagas = await Vagas.findOne();
+
+    // Verifica se o registro de vagas existe
+    if (!vagas) {
+      return res.status(404).json({ mensagem: "Registro de vagas não encontrado. Inicialize as vagas no banco de dados." });
+    }
+
+    // Retorna as informações de vagas disponíveis
+    res.json({
+      total_vagas: vagas.total_vagas,
+      vagas_ocupadas: vagas.vagas_ocupadas,
+      vagas_disponiveis: vagas.total_vagas - vagas.vagas_ocupadas,
+    });
+  } catch (error) {
+    console.error("Erro ao visualizar vagas:", error);
+    res.status(500).json({ mensagem: "Erro no servidor ao buscar vagas." });
+  }
 }

@@ -1,9 +1,9 @@
 import express from 'express'
 import { login, cadastrarUsuario, atualizarUsuario, removerUsuario} from '../controllers/authController.js'
 import { listarVeiculos, cadastrarVeiculo, atualizarVeiculo, removerVeiculo } from '../controllers/veiculosController.js'
-import { registrarEntrada, registrarSaida } from "../controllers/acessoController.js"
+import { registrarEntrada, registrarSaida, visualizarVagas } from "../controllers/acessoController.js"
 import { autenticar } from '../middlewares/middleware.js'
-import {visualizarVagas, listarAcessos} from '../controllers/relatoriosController.js'
+import { listarAcessos} from '../controllers/relatoriosController.js'
 
 export const router = express.Router()
 
