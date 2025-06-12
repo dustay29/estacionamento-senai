@@ -9,7 +9,9 @@ export const router = express.Router()
 
 //Rotas adminstrativas
 router.get("/vagas", visualizarVagas); // Visualizar vagas disponíveis
-router.get("/relatorios/acessos", listarAcessos); // Relatórios de acessos
+router.get("/relatorios/acessos", listarAcessos); // Relatórios de acessos adm
+// rota para listar todos os veiculos e usuarios cadastrados
+// criar acesso de adm
 
 // Rotas públicas
 router.post('/login', login) // ok
