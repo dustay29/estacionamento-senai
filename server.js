@@ -33,10 +33,10 @@ app.use(router)
 // futuro uso do router app.use(router)
 
 try{
-  //   await Usuarios.sync({ alter: true })
+  //    await Usuarios.sync({ alter: true })
   //    await Veiculos.sync({ alter: true })
   //    await Acesso.sync({alter:true})
-  // await Vagas.sync({ alter: true });
+  //    await Vagas.sync({ alter: true });
 
   
 } catch(erro){

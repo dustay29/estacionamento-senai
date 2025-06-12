@@ -72,3 +72,12 @@ export const removerVeiculo = async (req, res) => {
     res.status(500).json({ mensagem: "Erro ao remover veículo" });
   }
 }
+export const listarTodosVeiculos = async (req, res) => {
+  try {
+    const veiculos = await Veiculos.findAll();
+    res.json(veiculos);
+  } catch (erro) {
+    console.error("Erro ao listar veículos:", erro);
+    res.status(500).json({ mensagem: "Erro no servidor ao listar veículos." });
+  }
+};
