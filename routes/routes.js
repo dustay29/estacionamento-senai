@@ -16,7 +16,7 @@ router.get("/veiculos", autenticar, verificarAdmin, listarTodosVeiculos); // Lis
 
 // Rotas públicas
 router.post("/login", login); // ok
-router.post("/usuarios", cadastrarUsuario); // ok
+router.post("/cadastro", cadastrarUsuario); // ok
 router.put("/usuarios/:id", atualizarUsuario); // ok
 router.delete("/usuarios/:id", removerUsuario); // ok
 
