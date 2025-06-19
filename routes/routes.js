@@ -10,9 +10,11 @@
 
     // Rotas administrativas
 
-    router.get("/relatorios/acessos", autenticar, verificarAdmin, listarAcessos); // Relatórios de acessos (somente admin)
-    router.get("/usuarios", autenticar, verificarAdmin, listarTodosUsuarios); // Listar todos os usuários (somente admin)
-    router.get("/veiculos", autenticar, verificarAdmin, listarTodosVeiculos); // Listar todos os veículos (somente admin)
+// Rotas públicas
+router.post("/login", login); // ok
+router.post("/cadastro", cadastrarUsuario); // ok
+router.put("/usuarios/:id", atualizarUsuario); // ok
+router.delete("/usuarios/:id", removerUsuario); // ok
 
     // Rotas públicas
     router.get("/vagas", visualizarVagas); // Visualizar vagas disponíveis
