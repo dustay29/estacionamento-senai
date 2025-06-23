@@ -147,3 +147,22 @@ export const listarTodosUsuarios = async (req, res) => {
     res.status(500).json({ mensagem: "Erro no servidor ao listar usuários." });
   }
 };
+
+// controller
+export const buscarUsuarioLogado = async (req, res) => {
+  try {
+    const usuario = await Usuarios.findByPk(req.usuarioId, {
+      attributes: { exclude: ['senha', 'id_usuario'] } // remove senha e id
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ erro: "Usuário não encontrado." });
+    }
+
+    res.json(usuario);
+  } catch (erro) {
+    console.error("Erro ao buscar usuário logado:", erro);
+    res.status(500).json({ erro: "Erro ao buscar usuário logado." });
+  }
+};
+
