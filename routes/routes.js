@@ -33,8 +33,8 @@ router.use(autenticar);
 
 // 🔐 ROTAS PROTEGIDAS (precisam de token)
 router.get("/usuarios/me", buscarUsuarioLogado);
-router.put("/usuarios/:id", atualizarUsuario);
-router.delete("/usuarios/:id", removerUsuario);
+router.put("/usuarios/atualizar", atualizarUsuario);
+router.delete("/usuarios/delete", removerUsuario);
 
 // Acesso (entrada/saída de veículos)
 router.post("/acessos/entrada", registrarEntrada);

@@ -75,7 +75,7 @@ export const cadastrarUsuario = async (req, res) => {
 
 export const atualizarUsuario = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id  = req.usuarioId;
     const { nome, cpf, telefone, email, tipo_usuario, senha } = req.body;
 
     // Verifica se o usuário existe
@@ -118,9 +118,8 @@ export const atualizarUsuario = async (req, res) => {
 // Função para remover um usuário do banco de dados
 export const removerUsuario = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const usuario = await Usuarios.findByPk(id);
+    const usuario = await Usuarios.findByPk(req.usuarioId);
+    const id = req.usuarioId; // Usando o ID do usuário logado
 
     if (!usuario) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
@@ -151,9 +150,8 @@ export const listarTodosUsuarios = async (req, res) => {
 // controller
 export const buscarUsuarioLogado = async (req, res) => {
   try {
-    console.log("ID do usuário vindo do token:", req.usuarioId); // deve mostrar 6
 
-    const usuario = await Usuarios.findByPk(req.usuarioId); // 👈 aqui estava o erro
+    const usuario = await Usuarios.findByPk(req.usuarioId);
 
     if (!usuario) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
