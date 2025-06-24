@@ -151,9 +151,9 @@ export const listarTodosUsuarios = async (req, res) => {
 // controller
 export const buscarUsuarioLogado = async (req, res) => {
   try {
-    const usuario = await Usuarios.findByPk(req.usuarioId, {
-      attributes: { exclude: ['senha', 'id_usuario'] } // remove senha e id
-    });
+    console.log("ID do usuário vindo do token:", req.usuarioId); // deve mostrar 6
+
+    const usuario = await Usuarios.findByPk(req.usuarioId); // 👈 aqui estava o erro
 
     if (!usuario) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
@@ -165,4 +165,5 @@ export const buscarUsuarioLogado = async (req, res) => {
     res.status(500).json({ erro: "Erro ao buscar usuário logado." });
   }
 };
+
 

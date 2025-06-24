@@ -1,38 +1,50 @@
 import express from "express";
-import { login, cadastrarUsuario, atualizarUsuario, removerUsuario } from "../controllers/authController.js";
-import { listarVeiculos, cadastrarVeiculo, atualizarVeiculo, removerVeiculo, listarTodosVeiculos } from "../controllers/veiculosController.js";
-import { registrarEntrada, registrarSaida, visualizarVagas } from "../controllers/acessoController.js";
-import { autenticar, verificarAdmin } from "../middlewares/middleware.js";
+import { 
+  login, 
+  cadastrarUsuario, 
+  atualizarUsuario, 
+  removerUsuario, 
+  listarTodosUsuarios, 
+  buscarUsuarioLogado 
+} from "../controllers/authController.js";
+import { 
+  listarVeiculos, 
+  cadastrarVeiculo, 
+  atualizarVeiculo, 
+  removerVeiculo 
+} from "../controllers/veiculosController.js";
+import { 
+  registrarEntrada, 
+  registrarSaida, 
+  visualizarVagas 
+} from "../controllers/acessoController.js";
 import { listarAcessos } from "../controllers/relatoriosController.js";
-import { listarTodosUsuarios, buscarUsuarioLogado } from "../controllers/authController.js";
+import { autenticar, verificarAdmin } from "../middlewares/middleware.js";
 
 export const router = express.Router();
 
-// Rotas administrativas
+// 🔓 ROTAS PÚBLICAS (sem autenticação)
+router.post("/login", login);
+router.post("/cadastro", cadastrarUsuario);
+router.get("/vagas", visualizarVagas);
 
-// Rotas públicas
-router.post("/login", login); // ok
-router.post("/cadastro", cadastrarUsuario); // ok
-router.put("/usuarios/:id", atualizarUsuario); // ok
-router.delete("/usuarios/:id", removerUsuario); // ok
+// 🔒 MIDDLEWARE - tudo abaixo será protegido
+router.use(autenticar);
 
-// Rotas públicas
-router.get("/vagas", visualizarVagas); // Visualizar vagas disponíveis
-router.post("/login", login); // ok
-router.post("/usuarios", cadastrarUsuario); // ok
-router.put("/usuarios/:id", atualizarUsuario); // ok
-router.get('/usuarios/me', buscarUsuarioLogado);
-router.delete("/usuarios/:id", removerUsuario); // ok
+// 🔐 ROTAS PROTEGIDAS (precisam de token)
+router.get("/usuarios/me", buscarUsuarioLogado);
+router.put("/usuarios/:id", atualizarUsuario);
+router.delete("/usuarios/:id", removerUsuario);
 
-// Middleware de autenticação
-router.use(autenticar); // ok
-
-// Rotas de acesso (controle de entrada e saída)
+// Acesso (entrada/saída de veículos)
 router.post("/acessos/entrada", registrarEntrada);
 router.post("/acessos/saida/:id_acesso", registrarSaida);
 
-// Rotas de veículos
-router.get("/veiculos", listarVeiculos); // ok
-router.post("/veiculos", cadastrarVeiculo); // ok
-router.put("/veiculos/:id", atualizarVeiculo); // ok
-router.delete("/veiculos/:id", removerVeiculo); // ok
+// Veículos
+router.get("/veiculos", listarVeiculos);
+router.post("/veiculos", cadastrarVeiculo);
+router.put("/veiculos/:id", atualizarVeiculo);
+router.delete("/veiculos/:id", removerVeiculo);
+
+// Relatórios, usuários etc (se quiser proteger com admin, use verificarAdmin)
+router.get("/usuarios", listarTodosUsuarios); // opcionalmente router.get("/usuarios", verificarAdmin, listarTodosUsuarios);
