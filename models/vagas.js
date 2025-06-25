@@ -35,7 +35,6 @@ const Vagas = database.define("Vagas", {
   },
 }, {
   timestamps: true, // Adiciona createdAt e updatedAt automaticamente
-  tableName: "vagas", // Define nome da tabela (opcional, mas recomendado)
   underscored: true,  // Converte nomes camelCase para snake_case no banco
 });
 
