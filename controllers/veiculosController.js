@@ -35,18 +35,27 @@ export const cadastrarVeiculo = async (req, res) => {
 
 
 export const atualizarVeiculo = async (req, res) => {
-  const id_veiculo = req.params.id;
-
+  const { id_veiculo } = req.body;
 
   try {
-    const veiculo = await Veiculos.findOne({ where: {id_veiculo, id_usuario: req.usuarioId } });
+    if (!id_veiculo) {
+      return res.status(400).json({ mensagem: "ID do veículo é obrigatório no corpo da requisição." });
+    }
+
+    // Verifica se o veículo existe e pertence ao usuário
+    const veiculo = await Veiculos.findOne({
+      where: { id_veiculo, id_usuario: req.usuarioId }
+    });
+
     if (!veiculo) {
       return res.status(404).json({ mensagem: 'Veículo não encontrado' });
     }
 
-    await Veiculos.update(req.body, { where: { id_veiculo, id_usuario: req.usuarioId } });
-
-    const veiculoAtualizado = await Veiculos.findOne({ where: { id_veiculo, id_usuario: req.usuarioId } });
+    // Atualiza e retorna o veículo atualizado
+    const [_, [veiculoAtualizado]] = await Veiculos.update(req.body, {
+      where: { id_veiculo, id_usuario: req.usuarioId },
+      returning: true
+    });
 
     res.json(veiculoAtualizado);
   } catch (erro) {
@@ -57,21 +66,29 @@ export const atualizarVeiculo = async (req, res) => {
 
 
 export const removerVeiculo = async (req, res) => {
-  // buscando id do veiculo a ser excluido
-  const id_veiculo = req.params.id;
+  const { id_veiculo } = req.body;
+
+  if (!id_veiculo) {
+    return res.status(400).json({ mensagem: 'ID do veículo é obrigatório no corpo da requisição.' });
+  }
 
   try {
+    // Verifica se o veículo existe e pertence ao usuário logado
     const veiculo = await Veiculos.findOne({ where: { id_veiculo, id_usuario: req.usuarioId } });
-    if (!veiculo) return res.status(404).json({ mensagem: 'Veículo não encontrado' });
+
+    if (!veiculo) {
+      return res.status(404).json({ mensagem: 'Veículo não encontrado.' });
+    }
 
     await Veiculos.destroy({ where: { id_veiculo, id_usuario: req.usuarioId } });
 
-    res.status(200).json({ mensagem: 'Veículo deletado com sucesso' });
+    res.status(200).json({ mensagem: 'Veículo removido com sucesso.' });
   } catch (erro) {
     console.error("Erro ao remover veículo:", erro);
-    res.status(500).json({ mensagem: "Erro ao remover veículo" });
+    res.status(500).json({ mensagem: 'Erro ao remover veículo.' });
   }
-}
+};
+
 export const listarTodosVeiculos = async (req, res) => {
   try {
     const veiculos = await Veiculos.findAll();

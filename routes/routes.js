@@ -43,8 +43,8 @@ router.post("/acessos/saida/:id_acesso", registrarSaida);
 // Veículos
 router.get("/veiculos", listarVeiculos);
 router.post("/veiculos", cadastrarVeiculo);
-router.put("/veiculos/:id", atualizarVeiculo);
-router.delete("/veiculos/:id", removerVeiculo);
+router.put("/veiculos", atualizarVeiculo);
+router.delete("/veiculos", removerVeiculo);
 
 // Relatórios, usuários etc (se quiser proteger com admin, use verificarAdmin)
 router.get("/usuarios", listarTodosUsuarios); // opcionalmente router.get("/usuarios", verificarAdmin, listarTodosUsuarios);
