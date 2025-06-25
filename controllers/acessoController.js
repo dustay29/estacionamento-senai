@@ -1,6 +1,7 @@
 import { Acesso } from "../models/acesso.js";
 import { Veiculos } from "../models/veiculo.js";
 import { Vagas } from "../models/vagas.js";
+import { Op } from 'sequelize';
 
 // Registrar entrada
 export async function registrarEntrada(req, res) {
@@ -97,5 +98,84 @@ export async function visualizarVagas(req, res) {
   } catch (error) {
     console.error("Erro ao visualizar vagas:", error);
     res.status(500).json({ mensagem: "Erro no servidor ao buscar vagas." });
+  }
+}
+
+// atualizarVagas admin
+export async function atualizarCapacidadeVagas(req, res) {
+  try {
+    const { total_vagas } = req.body;
+
+    if (total_vagas === undefined || isNaN(total_vagas) || total_vagas < 0) {
+      return res.status(400).json({ mensagem: "total_vagas deve ser um número válido e maior ou igual a 0." });
+    }
+
+    const vagas = await Vagas.findOne();
+
+    if (!vagas) {
+      return res.status(404).json({ mensagem: "Registro de vagas não encontrado." });
+    }
+
+    // Não deixar o total de vagas menor que o número de vagas já ocupadas
+    if (total_vagas < vagas.vagas_ocupadas) {
+      return res.status(400).json({ mensagem: "Total de vagas não pode ser menor que as vagas já ocupadas." });
+    }
+
+    vagas.total_vagas = total_vagas;
+    await vagas.save();
+
+    res.json({ mensagem: "Capacidade de vagas atualizada com sucesso.", vagas });
+  } catch (error) {
+    console.error("Erro ao atualizar vagas:", error);
+    res.status(500).json({ mensagem: "Erro no servidor ao atualizar vagas." });
+  }
+}
+
+
+
+export async function listarAcessos(req, res) {
+  try {
+    const { placa, data_inicio, data_fim, id_usuario } = req.query;
+
+    // Filtro base
+    let where = {};
+    let include = [{
+      model: Veiculos,
+      as: 'veiculo'
+    }];
+
+    if (placa) {
+      include[0].where = { placa };
+    }
+
+    if (id_usuario) {
+      include[0].where = {
+        ...include[0].where,
+        id_usuario
+      };
+    }
+
+    if (data_inicio || data_fim) {
+      where.data_hora_entrada = {};
+
+      if (data_inicio) {
+        where.data_hora_entrada[Op.gte] = new Date(data_inicio);
+      }
+
+      if (data_fim) {
+        where.data_hora_entrada[Op.lte] = new Date(data_fim);
+      }
+    }
+
+    const acessos = await Acesso.findAll({
+      where,
+      include,
+      order: [['data_hora_entrada', 'DESC']]
+    });
+
+    res.json(acessos);
+  } catch (error) {
+    console.error("Erro ao listar acessos:", error);
+    res.status(500).json({ mensagem: "Erro ao buscar acessos." });
   }
 }

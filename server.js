@@ -33,11 +33,11 @@ app.use(router)
 // futuro uso do router app.use(router)
 
 try{
-    //  await Usuarios.sync({ alter: true })
-    //  await Veiculos.sync({ alter: true })
-    //  await Acesso.sync({alter:true})
-    //  await Vagas.sync({ alter: true });
-
+// await Acesso.sync({ force: true });
+// await Vagas.sync({ force: true });
+// await Veiculos.sync({ force: true });
+// await Usuarios.sync({ force: true });
+// console.log("Conexão com o banco de dados estabelecida com sucesso!");
   
 } catch(erro){
     console.log(erro)

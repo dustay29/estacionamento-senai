@@ -1,52 +1,50 @@
-// criar token
-import jwt from 'jsonwebtoken'
-// importando o bcrypt para criptografar senhas
+import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
-// importando usuarios
-import { Usuarios } from '../models/usuario.js'
+import { Usuarios } from '../models/usuario.js';
 import { Veiculos } from '../models/veiculo.js';
 
-
 export const login = async (req, res) => {
-    try {
-        const { email, senha } = req.body;
+  try {
+    const { email, senha } = req.body;
 
-        if (!email || !senha) {
-            return res.status(400).json({ erro: "Email e senha são obrigatórios." });
-        }
-
-        const usuario = await Usuarios.findOne({ where: { email } });
-
-        if (!usuario) {
-            return res.status(401).json({ mensagem: 'Credenciais inválidas' });
-        }
-
-        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
-
-        if (!senhaCorreta) {
-            return res.status(401).json({ mensagem: 'Credenciais inválidas' });
-        }
-
-        const token = jwt.sign(
-            { id: usuario.id_usuario },
-            process.env.SEGREDO_JWT,
-            { expiresIn: '1h' }
-        );
-
-        res.json({ mensagem: "Login realizado com sucesso!", token });
-
-    } catch (erro) {
-        console.error(erro);
-        res.status(500).json({ erro: "Erro no login." });
+    if (!email || !senha) {
+      return res.status(400).json({ erro: "Email e senha são obrigatórios." });
     }
-};
 
+    const usuario = await Usuarios.findOne({ where: { email } });
+
+    if (!usuario) {
+      return res.status(401).json({ mensagem: 'Credenciais inválidas' });
+    }
+
+    const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+
+    if (!senhaCorreta) {
+      return res.status(401).json({ mensagem: 'Credenciais inválidas' });
+    }
+
+    const token = jwt.sign(
+      { id: usuario.id_usuario, isAdmin: usuario.isAdmin },
+      process.env.SEGREDO_JWT,
+      { expiresIn: '1h' }
+    );
+
+    res.json({
+      mensagem: "Login realizado com sucesso!",
+      token
+    });
+
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: "Erro no login." });
+  }
+};
 
 export const cadastrarUsuario = async (req, res) => {
   try {
-    const { nome, cpf, telefone, email, tipo_usuario, senha } = req.body;
+    const { nome, cpf, telefone, email, senha } = req.body;
 
-    if (!nome || !cpf || !telefone || !email || !tipo_usuario || !senha) {
+    if (!nome || !cpf || !telefone || !email || !senha) {
       return res.status(400).json({ erro: "Dados incompletos." });
     }
 
@@ -62,11 +60,19 @@ export const cadastrarUsuario = async (req, res) => {
       cpf,
       telefone,
       email,
-      tipo_usuario,
       senha: senhaHash,
+      isAdmin: false, // sempre usuário comum
     });
 
-    res.status(201).json(novoUsuario);
+    res.status(201).json({
+      mensagem: "Usuário cadastrado com sucesso!",
+      usuario: {
+        id: novoUsuario.id_usuario,
+        nome: novoUsuario.nome,
+        email: novoUsuario.email,
+        isAdmin: novoUsuario.isAdmin
+      }
+    });
   } catch (erro) {
     console.error(erro);
     res.status(500).json({ erro: "Erro ao cadastrar usuário." });
@@ -75,16 +81,14 @@ export const cadastrarUsuario = async (req, res) => {
 
 export const atualizarUsuario = async (req, res) => {
   try {
-    const id  = req.usuarioId;
-    const { nome, cpf, telefone, email, tipo_usuario, senha } = req.body;
+    const id = req.usuarioId;
+    const { nome, cpf, telefone, email, senha } = req.body;
 
-    // Verifica se o usuário existe
     const usuario = await Usuarios.findByPk(id);
     if (!usuario) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }
 
-    // Verifica se o novo email já está sendo usado por outro usuário
     if (email && email !== usuario.email) {
       const emailExiste = await Usuarios.findOne({ where: { email } });
       if (emailExiste) {
@@ -92,18 +96,18 @@ export const atualizarUsuario = async (req, res) => {
       }
     }
 
-    // Atualiza os campos (apenas se enviados)
+    // Atualiza os campos (se enviados)
     if (nome) usuario.nome = nome;
     if (cpf) usuario.cpf = cpf;
     if (telefone) usuario.telefone = telefone;
     if (email) usuario.email = email;
-    if (tipo_usuario) usuario.tipo_usuario = tipo_usuario;
 
-    // Se a senha for enviada, criptografa antes de atualizar
     if (senha) {
       const senhaHash = await bcrypt.hash(senha, 10);
       usuario.senha = senhaHash;
     }
+
+    // ❗ Nunca permitir mudar isAdmin por aqui
 
     await usuario.save();
 
@@ -115,20 +119,16 @@ export const atualizarUsuario = async (req, res) => {
   }
 };
 
-// Função para remover um usuário do banco de dados
 export const removerUsuario = async (req, res) => {
   try {
     const usuario = await Usuarios.findByPk(req.usuarioId);
-    const id = req.usuarioId; // Usando o ID do usuário logado
+    const id = req.usuarioId;
 
     if (!usuario) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }
 
-    // Remove todos os veículos associados ao usuário
     await Veiculos.destroy({ where: { id_usuario: id } });
-
-    // Agora sim, remove o usuário
     await usuario.destroy();
 
     res.json({ mensagem: "Usuário removido com sucesso!" });
@@ -136,32 +136,25 @@ export const removerUsuario = async (req, res) => {
     console.error(erro);
     res.status(500).json({ erro: "Erro ao remover usuário." });
   }
-}
-export const listarTodosUsuarios = async (req, res) => {
-  try {
-    const usuarios = await Usuarios.findAll();
-    res.json(usuarios);
-  } catch (erro) {
-    console.error("Erro ao listar usuários:", erro);
-    res.status(500).json({ mensagem: "Erro no servidor ao listar usuários." });
-  }
 };
 
-// controller
 export const buscarUsuarioLogado = async (req, res) => {
   try {
-
     const usuario = await Usuarios.findByPk(req.usuarioId);
 
     if (!usuario) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }
 
-    res.json(usuario);
+    res.json({
+      id: usuario.id_usuario,
+      nome: usuario.nome,
+      email: usuario.email,
+      isAdmin: usuario.isAdmin
+    });
+
   } catch (erro) {
     console.error("Erro ao buscar usuário logado:", erro);
     res.status(500).json({ erro: "Erro ao buscar usuário logado." });
   }
 };
-
-

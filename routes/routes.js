@@ -4,21 +4,30 @@ import {
   cadastrarUsuario, 
   atualizarUsuario, 
   removerUsuario, 
-  listarTodosUsuarios, 
   buscarUsuarioLogado 
 } from "../controllers/authController.js";
 import { 
-  listarVeiculos, 
+  listarVeiculos,
   cadastrarVeiculo, 
   atualizarVeiculo, 
   removerVeiculo 
 } from "../controllers/veiculosController.js";
+//Admin
 import { 
   registrarEntrada, 
   registrarSaida, 
-  visualizarVagas 
+  visualizarVagas,
+  atualizarCapacidadeVagas,
+  listarAcessos
 } from "../controllers/acessoController.js";
-import { listarAcessos } from "../controllers/relatoriosController.js";
+import {
+  adminAtualizarUsuario,
+  adminRemoverUsuario,
+  adminAtualizarVeiculo,
+  adminRemoverVeiculo,
+  listarTodosVeiculos,
+  listarTodosUsuarios
+} from "../controllers/adminController.js";
 import { autenticar, verificarAdmin } from "../middlewares/middleware.js";
 
 export const router = express.Router();
@@ -46,5 +55,15 @@ router.post("/veiculos", cadastrarVeiculo);
 router.put("/veiculos", atualizarVeiculo);
 router.delete("/veiculos", removerVeiculo);
 
-// Relatórios, usuários etc (se quiser proteger com admin, use verificarAdmin)
-router.get("/usuarios", listarTodosUsuarios); // opcionalmente router.get("/usuarios", verificarAdmin, listarTodosUsuarios);
+// Relatórios e rotas administrativas
+router.get("/usuarios", verificarAdmin, listarTodosUsuarios);
+router.get("/veiculos/todos", verificarAdmin, listarTodosVeiculos);
+router.put("/admin/usuarios", verificarAdmin, adminAtualizarUsuario);
+router.delete("/admin/usuarios/:id", verificarAdmin, adminRemoverUsuario);
+router.put("/admin/veiculos", verificarAdmin, adminAtualizarVeiculo);
+router.delete("/admin/veiculos", verificarAdmin, adminRemoverVeiculo);
+
+router.post("/admin/acessos/entrada", verificarAdmin, registrarEntrada);
+router.post("/admin/acessos/saida/:id_acesso", verificarAdmin, registrarSaida);
+router.put("/admin/vagas", verificarAdmin, atualizarCapacidadeVagas);
+router.get("/admin/acessos", verificarAdmin, listarAcessos);

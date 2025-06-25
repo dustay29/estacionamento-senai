@@ -34,10 +34,6 @@ const Usuarios = database.define("Usuarios", {
       isEmail: true,
     },
   },
-  tipo_usuario: {
-    type: DataTypes.ENUM("Aluno", "Professor", "Funcionário", "Visitante"),
-    allowNull: false,
-  },
   senha: {
     type: DataTypes.STRING,
     allowNull: false,

@@ -1,4 +1,5 @@
 import { Veiculos } from '../models/veiculo.js'
+import { Usuarios } from '../models/usuario.js'
 
 export const listarVeiculos = async (req, res) => {
     const veiculos = await Veiculos.findAll({ where: { id_usuario: req.usuarioId } })
@@ -89,12 +90,4 @@ export const removerVeiculo = async (req, res) => {
   }
 };
 
-export const listarTodosVeiculos = async (req, res) => {
-  try {
-    const veiculos = await Veiculos.findAll();
-    res.json(veiculos);
-  } catch (erro) {
-    console.error("Erro ao listar veículos:", erro);
-    res.status(500).json({ mensagem: "Erro no servidor ao listar veículos." });
-  }
-};
+
