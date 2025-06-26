@@ -1,4 +1,5 @@
 import express from "express";
+// usuarios
 import { 
   login, 
   cadastrarUsuario, 
@@ -6,20 +7,20 @@ import {
   removerUsuario, 
   buscarUsuarioLogado 
 } from "../controllers/authController.js";
+// veiculos
 import { 
   listarVeiculos,
   cadastrarVeiculo, 
   atualizarVeiculo, 
   removerVeiculo 
 } from "../controllers/veiculosController.js";
-//Admin
+//Admin acesso
 import { 
   registrarEntrada, 
   registrarSaida, 
-  visualizarVagas,
-  atualizarCapacidadeVagas,
   listarAcessos
 } from "../controllers/acessoController.js";
+// admin usuarios e veiculos
 import {
   adminAtualizarUsuario,
   adminRemoverUsuario,
@@ -28,6 +29,7 @@ import {
   listarTodosVeiculos,
   listarTodosUsuarios
 } from "../controllers/adminController.js";
+import { atualizarCapacidadeVagas , visualizarVagas} from "../controllers/vagasController.js";
 import { autenticar, verificarAdmin } from "../middlewares/middleware.js";
 
 export const router = express.Router();
@@ -45,26 +47,24 @@ router.get("/usuarios/me", buscarUsuarioLogado);
 router.put("/usuarios/atualizar", atualizarUsuario);
 router.delete("/usuarios/delete", removerUsuario);
 
-// Acesso (entrada/saída de veículos)
-router.post("/acessos/entrada", registrarEntrada);
-router.post("/acessos/saida/:id_acesso", registrarSaida);
-
-// Veículos
+// Veículos do usuário logado
 router.get("/veiculos", listarVeiculos);
 router.post("/veiculos", cadastrarVeiculo);
 router.put("/veiculos", atualizarVeiculo);
 router.delete("/veiculos", removerVeiculo);
 
 // Relatórios e rotas administrativas
+//usuarios
 router.get("/usuarios", verificarAdmin, listarTodosUsuarios);
 router.put("/admin/usuarios", verificarAdmin, adminAtualizarUsuario);
 router.delete("/admin/usuarios", verificarAdmin, adminRemoverUsuario);
-
+//veiculos
 router.get("/veiculos/todos", verificarAdmin, listarTodosVeiculos);
 router.put("/admin/veiculos", verificarAdmin, adminAtualizarVeiculo);
 router.delete("/admin/veiculos", verificarAdmin, adminRemoverVeiculo);
-
+// Acesso
 router.post("/admin/acessos/entrada", verificarAdmin, registrarEntrada);
-router.post("/admin/acessos/saida/:id_acesso", verificarAdmin, registrarSaida);
-router.put("/admin/vagas", verificarAdmin, atualizarCapacidadeVagas);
+router.put("/admin/acessos/saida", verificarAdmin, registrarSaida);
 router.get("/admin/acessos", verificarAdmin, listarAcessos);
+//vagas
+router.put("/admin/vagas", verificarAdmin, atualizarCapacidadeVagas);

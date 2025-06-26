@@ -52,14 +52,19 @@ export const adminRemoverUsuario = async (req, res) => {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }
 
+    // Deletar veículos associados
+    await Veiculos.destroy({ where: { id_usuario } });
+
+    // Remover usuário
     await usuario.destroy();
 
-    res.json({ mensagem: "Usuário deletado com sucesso!" });
+    res.json({ mensagem: "Usuário e veículos deletados com sucesso!" });
   } catch (erro) {
     console.error(erro);
     res.status(500).json({ erro: "Erro ao deletar usuário." });
   }
 };
+
 
 // Admin lista todos os usuários
 export const listarTodosUsuarios = async (req, res) => {
