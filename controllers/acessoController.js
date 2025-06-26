@@ -70,10 +70,6 @@ export const registrarSaida = async (req, res) => {
 
 
 // 3. GET - Listar Acessos
-
-import { Op } from "sequelize";
-import { Acesso } from "../models/acesso.js";
-
 export const listarAcessos = async (req, res) => {
   try {
       // Aqui mostra os filtros que foram passados na URL

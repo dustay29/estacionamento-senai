@@ -12,7 +12,7 @@ const Vagas = database.define("Vagas", {
   // Total de vagas disponíveis
   total_vagas: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     validate: {
       min: 0, // Garante que seja zero ou mais
     },
@@ -35,7 +35,8 @@ const Vagas = database.define("Vagas", {
   },
 }, {
   timestamps: true, // Adiciona createdAt e updatedAt automaticamente
-  underscored: true,  // Converte nomes camelCase para snake_case no banco
+  underscored: true,
+   tableName: "Vagas", // Nome da tabela no banco de dados
 });
 
 export { Vagas };

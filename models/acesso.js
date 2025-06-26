@@ -1,3 +1,5 @@
+import { database } from "../database.js";
+import { DataTypes } from "sequelize";
 const Acesso = database.define("Acesso", {
   id_acesso: {
     primaryKey: true,
@@ -57,6 +59,8 @@ const Acesso = database.define("Acesso", {
   },
 }, {
   timestamps: true,
-  tableName: "acessos",
+  tableName: "Acessos",
   underscored: true,
 });
+
+export { Acesso };
