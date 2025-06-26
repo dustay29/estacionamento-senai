@@ -6,9 +6,9 @@ import { Veiculos } from '../models/veiculo.js';
 // Admin atualiza os dados de qualquer usuário
 export const adminAtualizarUsuario = async (req, res) => {
   try {
-    const { id, nome, cpf, telefone, email, senha, isAdmin } = req.body;
-
-    const usuario = await Usuarios.findByPk(id);
+    const { id_usuario, nome, cpf, telefone, email, senha, isAdmin } = req.body;
+    console.log("Dados recebidos para atualização:", req.body);
+    const usuario = await Usuarios.findByPk(id_usuario);
     if (!usuario) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }
@@ -45,9 +45,9 @@ export const adminAtualizarUsuario = async (req, res) => {
 // Admin remove qualquer usuário pelo ID
 export const adminRemoverUsuario = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id_usuario } = req.body;
 
-    const usuario = await Usuarios.findByPk(id);
+    const usuario = await Usuarios.findByPk(id_usuario);
     if (!usuario) {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }

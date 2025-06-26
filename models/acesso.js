@@ -1,11 +1,7 @@
-// importando o banco de dados
-import { database } from "../database.js"
-// importando os datatypes
-import { DataTypes } from "sequelize"
-// importando o modelo de Veículos
-import { Veiculos } from "./veiculo.js"
+import { database } from "../database.js";
+import { DataTypes } from "sequelize";
+import { Veiculos } from "./veiculo.js";
 
-// criando a tabela Acesso
 const Acesso = database.define("Acesso", {
   id_acesso: {
     primaryKey: true,
@@ -19,15 +15,16 @@ const Acesso = database.define("Acesso", {
       model: Veiculos,
       key: "id_veiculo",
     },
+    onDelete: "CASCADE"
   },
   data_hora_entrada: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW, // preenche automático se não mandar
+    defaultValue: DataTypes.NOW,
   },
   data_hora_saida: {
     type: DataTypes.DATE,
-    allowNull: true, // só preenche na saída
+    allowNull: true,
   },
   autorizado: {
     type: DataTypes.ENUM("Sim", "Não"),
@@ -35,13 +32,17 @@ const Acesso = database.define("Acesso", {
   },
   motivo_bloqueio: {
     type: DataTypes.ENUM("Lotação", "Veículo não autorizado", "Outro"),
-    allowNull: true, // só é preenchido se for "Não autorizado"
+    allowNull: true,
   },
-})
+}, {
+  timestamps: true,
+  tableName: "vagas",
+  underscored: true,
+});
 
-// Relacionamento: um acesso pertence a um veículo
 Acesso.belongsTo(Veiculos, {
   foreignKey: "id_veiculo",
-})
+  onDelete: "CASCADE"
+});
 
-export { Acesso }
+export { Acesso };

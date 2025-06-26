@@ -32,7 +32,8 @@ const Veiculos = database.define('Veiculos', {
     references: {
       model: Usuarios,
       key: 'id_usuario'
-    }
+    },
+    onDelete: 'CASCADE'
   },
   id_vaga: {
     type: DataTypes.INTEGER,
@@ -44,8 +45,11 @@ const Veiculos = database.define('Veiculos', {
   }
 });
 
-// Associações
+// Relacionamentos
 Veiculos.belongsTo(Vagas, { foreignKey: 'id_vaga', as: 'vaga' });
 Vagas.hasMany(Veiculos, { foreignKey: 'id_vaga', as: 'veiculos' });
+
+Veiculos.belongsTo(Usuarios, { foreignKey: 'id_usuario', onDelete: 'CASCADE' });
+Usuarios.hasMany(Veiculos, { foreignKey: 'id_usuario', onDelete: 'CASCADE' });
 
 export { Veiculos };

@@ -59,7 +59,7 @@ router.delete("/veiculos", removerVeiculo);
 router.get("/usuarios", verificarAdmin, listarTodosUsuarios);
 router.get("/veiculos/todos", verificarAdmin, listarTodosVeiculos);
 router.put("/admin/usuarios", verificarAdmin, adminAtualizarUsuario);
-router.delete("/admin/usuarios/:id", verificarAdmin, adminRemoverUsuario);
+router.delete("/admin/usuarios", verificarAdmin, adminRemoverUsuario);
 router.put("/admin/veiculos", verificarAdmin, adminAtualizarVeiculo);
 router.delete("/admin/veiculos", verificarAdmin, adminRemoverVeiculo);
 

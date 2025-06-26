@@ -1,9 +1,6 @@
-// importando o banco de dados
 import { database } from "../database.js";
-// importando os datatypes
 import { DataTypes } from "sequelize";
 
-// criando a tabela usuarios
 const Usuarios = database.define("Usuarios", {
   id_usuario: {
     primaryKey: true,
@@ -40,8 +37,9 @@ const Usuarios = database.define("Usuarios", {
   },
   isAdmin: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false, // Por padrão, o usuário não é administrador
+    defaultValue: false,
   },
 });
 
 export { Usuarios };
+  
