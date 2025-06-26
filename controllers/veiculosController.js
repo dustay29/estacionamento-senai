@@ -1,7 +1,7 @@
 import { Veiculos } from '../models/veiculo.js';
 import { Usuarios } from '../models/usuario.js';
-import { Vagas } from '../models/vagas.js';
 
+// Lista os veículos do usuário logado
 export const listarVeiculos = async (req, res) => {
   try {
     const veiculos = await Veiculos.findAll({ where: { id_usuario: req.usuarioId } });
@@ -11,26 +11,14 @@ export const listarVeiculos = async (req, res) => {
   }
 };
 
+// Cadastra um novo veículo
 export const cadastrarVeiculo = async (req, res) => {
   try {
-    const { placa, modelo, cor, tipo_veiculo, id_vaga } = req.body;
-
-    if (!id_vaga) {
-      return res.status(400).json({ mensagem: "A vaga é obrigatória." });
-    }
+    const { placa, modelo, cor, tipo_veiculo } = req.body;
 
     const veiculoExistente = await Veiculos.findOne({ where: { placa } });
     if (veiculoExistente) {
       return res.status(400).json({ mensagem: "Já existe um veículo com essa placa." });
-    }
-
-    const vaga = await Vagas.findByPk(id_vaga);
-    if (!vaga) {
-      return res.status(404).json({ mensagem: "Vaga não encontrada." });
-    }
-
-    if (vaga.vagas_ocupadas >= vaga.total_vagas) {
-      return res.status(400).json({ mensagem: "Essa vaga está cheia." });
     }
 
     const novoVeiculo = await Veiculos.create({
@@ -39,14 +27,7 @@ export const cadastrarVeiculo = async (req, res) => {
       cor,
       tipo_veiculo,
       id_usuario: req.usuarioId,
-      id_vaga
     });
-
-    // Incrementar a vaga ocupada
-    await Vagas.update(
-      { vagas_ocupadas: vaga.vagas_ocupadas + 1 },
-      { where: { id_vaga } }
-    );
 
     res.status(201).json(novoVeiculo);
   } catch (erro) {
@@ -55,6 +36,7 @@ export const cadastrarVeiculo = async (req, res) => {
   }
 };
 
+// Atualiza os dados de um veículo
 export const atualizarVeiculo = async (req, res) => {
   const { id_veiculo } = req.body;
 
@@ -71,8 +53,8 @@ export const atualizarVeiculo = async (req, res) => {
       return res.status(404).json({ mensagem: 'Veículo não encontrado' });
     }
 
-    // OBS: Aqui NÃO deixamos mudar o id_vaga por segurança
-    const { id_vaga, ...dadosParaAtualizar } = req.body;
+    const dadosParaAtualizar = { ...req.body };
+    delete dadosParaAtualizar.id_veiculo;
 
     const [_, [veiculoAtualizado]] = await Veiculos.update(dadosParaAtualizar, {
       where: { id_veiculo, id_usuario: req.usuarioId },
@@ -86,6 +68,7 @@ export const atualizarVeiculo = async (req, res) => {
   }
 };
 
+// Remove um veículo
 export const removerVeiculo = async (req, res) => {
   const { id_veiculo } = req.body;
 
@@ -100,14 +83,6 @@ export const removerVeiculo = async (req, res) => {
 
     if (!veiculo) {
       return res.status(404).json({ mensagem: 'Veículo não encontrado.' });
-    }
-
-    const vaga = await Vagas.findByPk(veiculo.id_vaga);
-    if (vaga) {
-      await Vagas.update(
-        { vagas_ocupadas: Math.max(vaga.vagas_ocupadas - 1, 0) },
-        { where: { id_vaga: vaga.id_vaga } }
-      );
     }
 
     await Veiculos.destroy({

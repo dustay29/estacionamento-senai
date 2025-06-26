@@ -1,7 +1,6 @@
 import { database } from "../database.js";
 import { DataTypes } from "sequelize";
 import { Usuarios } from "./usuario.js";
-import { Vagas } from "./vagas.js";
 
 const Veiculos = database.define('Veiculos', {
   id_veiculo: {
@@ -34,21 +33,10 @@ const Veiculos = database.define('Veiculos', {
       key: 'id_usuario'
     },
     onDelete: 'CASCADE'
-  },
-  id_vaga: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Vagas,
-      key: 'id_vaga'
-    }
   }
 });
 
-// Relacionamentos
-Veiculos.belongsTo(Vagas, { foreignKey: 'id_vaga', as: 'vaga' });
-Vagas.hasMany(Veiculos, { foreignKey: 'id_vaga', as: 'veiculos' });
-
+// Relacionamento com Usuário
 Veiculos.belongsTo(Usuarios, { foreignKey: 'id_usuario', onDelete: 'CASCADE' });
 Usuarios.hasMany(Veiculos, { foreignKey: 'id_usuario', onDelete: 'CASCADE' });
 

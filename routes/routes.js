@@ -57,9 +57,10 @@ router.delete("/veiculos", removerVeiculo);
 
 // Relatórios e rotas administrativas
 router.get("/usuarios", verificarAdmin, listarTodosUsuarios);
-router.get("/veiculos/todos", verificarAdmin, listarTodosVeiculos);
 router.put("/admin/usuarios", verificarAdmin, adminAtualizarUsuario);
 router.delete("/admin/usuarios", verificarAdmin, adminRemoverUsuario);
+
+router.get("/veiculos/todos", verificarAdmin, listarTodosVeiculos);
 router.put("/admin/veiculos", verificarAdmin, adminAtualizarVeiculo);
 router.delete("/admin/veiculos", verificarAdmin, adminRemoverVeiculo);
 
