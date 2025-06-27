@@ -1,5 +1,4 @@
-import { Veiculos } from '../models/veiculo.js';
-import { Usuarios } from '../models/usuario.js';
+import { Veiculos } from "../models/veiculo.js";
 
 // Lista os veículos do usuário logado
 export const listarVeiculos = async (req, res) => {

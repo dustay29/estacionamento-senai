@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
-import { Usuarios } from '../models/usuario.js';
-import { Veiculos } from '../models/veiculo.js';
+import { Veiculos } from "../models/veiculo.js";
+import { Usuarios } from "../models/usuario.js";
+
 
 export const login = async (req, res) => {
   try {
@@ -150,6 +151,8 @@ export const buscarUsuarioLogado = async (req, res) => {
       id: usuario.id_usuario,
       nome: usuario.nome,
       email: usuario.email,
+      cpf: usuario.cpf,
+      telefone: usuario.telefone,
       isAdmin: usuario.isAdmin
     });
 

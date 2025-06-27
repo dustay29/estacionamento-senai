@@ -1,5 +1,7 @@
 import { database } from "../database.js";
 import { DataTypes } from "sequelize";
+import { Veiculos } from "./veiculo.js"; // Importa para associação
+
 const Acesso = database.define("Acesso", {
   id_acesso: {
     primaryKey: true,
@@ -9,52 +11,36 @@ const Acesso = database.define("Acesso", {
 
   id_veiculo: {
     type: DataTypes.INTEGER,
-    allowNull: true, // Para visitante, pode ser null
+    allowNull: true, // null para visitantes
   },
 
   placa: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
 
-  modelo: {
+  visitante: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
+
+  nome_visitante: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
   },
 
-  cor: {
+  telefone_visitante: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
   },
-
-  tipo_veiculo: {
-    type: DataTypes.ENUM("Carro", "Moto", "Outro"),
-    allowNull: false
-  },
-
-  nome_usuario: {
-    type: DataTypes.STRING,
-    allowNull: true // Pode ser null se visitante não informar nome
-  },
-
   data_hora_entrada: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
-
   data_hora_saida: {
     type: DataTypes.DATE,
-    allowNull: true,
-  },
-
-  autorizado: {
-    type: DataTypes.ENUM("Sim", "Não"),
-    allowNull: false,
-  },
-
-  motivo_bloqueio: {
-    type: DataTypes.ENUM("Lotação", "Veículo não autorizado", "Outro"),
     allowNull: true,
   },
 }, {
@@ -62,5 +48,9 @@ const Acesso = database.define("Acesso", {
   tableName: "Acessos",
   underscored: true,
 });
+
+// Associação: Acesso pertence a Veículo
+Acesso.belongsTo(Veiculos, { foreignKey: "id_veiculo", as: "veiculo" });
+Veiculos.hasMany(Acesso, { foreignKey: "id_veiculo", as: "acessos" });
 
 export { Acesso };

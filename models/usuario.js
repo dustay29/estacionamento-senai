@@ -42,4 +42,3 @@ const Usuarios = database.define("Usuarios", {
 });
 
 export { Usuarios };
-  

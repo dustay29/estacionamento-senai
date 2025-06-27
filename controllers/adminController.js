@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
-import { Usuarios } from '../models/usuario.js';
-import { Veiculos } from '../models/veiculo.js';
+import { Veiculos } from "../models/veiculo.js";
+import { Usuarios } from "../models/usuario.js";
+
 
 // Admin atualiza os dados de qualquer usuário
 export const adminAtualizarUsuario = async (req, res) => {

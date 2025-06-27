@@ -8,9 +8,9 @@ app.use(cors());
 // Importar a conexao criada com sequelize
 import {database} from './database.js'
 import { router } from './routes/routes.js'
-import { Acesso } from './models/acesso.js';
-import { Usuarios } from './models/usuario.js';
 import { Veiculos } from './models/veiculo.js';
+import { Acesso } from "./models/acesso.js";
+import { Usuarios } from "./models/usuario.js";
 import { Vagas } from './models/vagas.js';
 // Conectar ao banco de dados
 // ultilizando json
@@ -23,6 +23,7 @@ try{
 // await Vagas.sync({ force: true });
 // await Veiculos.sync({ force: true });
 // await Usuarios.sync({ force: true });
+// // await database.sync({ force: true });
 // console.log("Conexão com o banco de dados estabelecida com sucesso!");
   
 } catch(erro){
