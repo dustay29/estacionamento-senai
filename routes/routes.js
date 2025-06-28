@@ -27,6 +27,7 @@ import {
   adminAtualizarVeiculo,
   adminRemoverVeiculo,
   listarTodosVeiculos,
+  buscarVeiculoPorPlaca,
   listarTodosUsuarios
 } from "../controllers/adminController.js";
 import { atualizarCapacidadeVagas , visualizarVagas} from "../controllers/vagasController.js";
@@ -53,15 +54,16 @@ router.post("/veiculos", cadastrarVeiculo);
 router.put("/veiculos", atualizarVeiculo);
 router.delete("/veiculos", removerVeiculo);
 
-// Relatórios e rotas administrativas
+// 🔐Relatórios e rotas administrativas🔐
 //usuarios
-router.get("/usuarios", verificarAdmin, listarTodosUsuarios);
+router.get("/admin/usuarios", verificarAdmin, listarTodosUsuarios);
 router.put("/admin/usuarios", verificarAdmin, adminAtualizarUsuario);
 router.delete("/admin/usuarios", verificarAdmin, adminRemoverUsuario);
 //veiculos
-router.get("/veiculos/todos", verificarAdmin, listarTodosVeiculos);
+router.get("/admin/veiculos", verificarAdmin, listarTodosVeiculos);
 router.put("/admin/veiculos", verificarAdmin, adminAtualizarVeiculo);
 router.delete("/admin/veiculos", verificarAdmin, adminRemoverVeiculo);
+router.get("/admin/veiculos/:placa", verificarAdmin, buscarVeiculoPorPlaca);
 // Acesso
 router.post("/admin/acessos/entrada", verificarAdmin, registrarEntrada);
 router.put("/admin/acessos/saida", verificarAdmin, registrarSaida);

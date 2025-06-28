@@ -28,6 +28,7 @@ export const autenticar = async (req, res, next) => {
 export const verificarAdmin = (req, res, next) => {
   if (!req.isAdmin) {
     return res.status(403).json({ mensagem: "Acesso negado. Apenas administradores podem realizar esta ação." });
+    return res (isadmin )
   }
   next();
 };

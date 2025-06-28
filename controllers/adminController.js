@@ -141,3 +141,24 @@ export const adminRemoverVeiculo = async (req, res) => {
     res.status(500).json({ mensagem: 'Erro ao remover veículo.' });
   }
 };
+// buscar veiculo por placa
+export const buscarVeiculoPorPlaca = async (req, res) => {
+  try {
+    const { placa } = req.params;
+
+    if (!placa) {
+      return res.status(400).json({ mensagem: "Placa é obrigatória." });
+    }
+
+    const veiculo = await Veiculos.findOne({ where: { placa } });
+
+    if (!veiculo) {
+      return res.status(404).json({ mensagem: "Veículo não encontrado." });
+    }
+
+    res.json(veiculo);
+  } catch (erro) {
+    console.error("Erro ao buscar veículo por placa:", erro);
+    res.status(500).json({ mensagem: "Erro no servidor ao buscar veículo." });
+  }
+};

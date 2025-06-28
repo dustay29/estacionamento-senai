@@ -83,19 +83,33 @@ export const listarAcessos = async (req, res) => {
       data_fim
     } = req.query;
 
+    console.log("\n📥 Filtros recebidos da query:", req.query);
+
     // Filtros no Acesso
     const filtrosAcesso = {};
-    if (visitante !== undefined) {
+    if (visitante !== undefined && visitante !== "todos") {
       filtrosAcesso.visitante = visitante === "true";
     }
+
     if (data_inicio && data_fim) {
       filtrosAcesso.data_hora_entrada = {
-        [Op.between]: [new Date(data_inicio), new Date(data_fim)]
+        [Op.between]: [
+          new Date(`${data_inicio}T00:00:00`),
+          new Date(`${data_fim}T23:59:59`)
+        ]
       };
     } else if (data_inicio) {
-      filtrosAcesso.data_hora_entrada = { [Op.gte]: new Date(data_inicio) };
-    } else if (data_fim) {
-      filtrosAcesso.data_hora_entrada = { [Op.lte]: new Date(data_fim) };
+  filtrosAcesso.data_hora_entrada = {
+    [Op.between]: [
+      new Date(`${data_inicio}T00:00:00`),
+      new Date(`${data_inicio}T23:59:59`)
+    ]
+  };
+}
+      else if (data_fim) {
+      filtrosAcesso.data_hora_entrada = {
+        [Op.lte]: new Date(`${data_fim}T23:59:59`)
+      };
     }
 
     // Filtros no Veículo
@@ -105,33 +119,42 @@ export const listarAcessos = async (req, res) => {
 
     // Filtros no Usuário
     const filtrosUsuario = {};
-    if (nome_usuario) filtrosUsuario.nome = { [Op.like]: `%${nome_usuario}%` };
+    if (nome_usuario && visitante !== "true") {
+      filtrosUsuario.nome = { [Op.like]: `%${nome_usuario}%` };
+    }
+
+    console.log("🔎 filtrosAcesso:", filtrosAcesso);
+    console.log("🚗 filtrosVeiculo:", filtrosVeiculo);
+    console.log("🧍 filtrosUsuario:", filtrosUsuario);
 
     // Buscar acessos com include dos veículos e usuários
-    const acessos = await Acesso.findAll({
-      where: filtrosAcesso,
+   const acessos = await Acesso.findAll({
+  where: filtrosAcesso,
+  include: [
+    {
+      model: Veiculos,
+      as: "veiculo",
+      where: Object.keys(filtrosVeiculo).length ? filtrosVeiculo : undefined,
+      required: Object.keys(filtrosVeiculo).length > 0 || Object.keys(filtrosUsuario).length > 0,
       include: [
         {
-          model: Veiculos,
-          as: "veiculo",
-          where: Object.keys(filtrosVeiculo).length ? filtrosVeiculo : undefined,
-          required: false, // Permite acessos visitantes que não têm veículo
-          include: [
-            {
-              model: Usuarios,
-              as: "usuario",
-              where: Object.keys(filtrosUsuario).length ? filtrosUsuario : undefined,
-              required: false,
-            }
-          ],
+          model: Usuarios,
+          as: "usuario",
+          where: Object.keys(filtrosUsuario).length ? filtrosUsuario : undefined,
+          required: Object.keys(filtrosUsuario).length > 0,
         }
       ],
-      order: [['data_hora_entrada', 'DESC']],
-    });
+    }
+  ],
+  order: [['data_hora_entrada', 'DESC']],
+});
 
+
+
+    console.log(`✅ Total acessos encontrados: ${acessos.length}`);
     res.json(acessos);
   } catch (error) {
-    console.error("Erro ao listar acessos:", error);
+    console.error("❌ Erro ao listar acessos:", error);
     res.status(500).json({ mensagem: "Erro ao listar acessos." });
   }
 };
