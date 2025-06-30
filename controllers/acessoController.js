@@ -1,24 +1,18 @@
 import { Veiculos } from "../models/veiculo.js";
 import { Acesso } from "../models/acesso.js";
 import { Usuarios } from "../models/usuario.js";
+import { Vagas } from "../models/vagas.js";
 import { Op } from "sequelize";
 // 1. POST - Registrar Entrada
 export const registrarEntrada = async (req, res) => {
   try {
-    const {
-      id_veiculo,
-      placa,
-      visitante = false,
-      nome_visitante = null,
-      telefone_visitante = null,
-    } = req.body;
+    const { id_veiculo, placa, visitante, nome_visitante, telefone_visitante } = req.body;
 
-    // Caso não seja visitante, id_veiculo deve existir
+    // Validação
     if (!visitante && !id_veiculo) {
       return res.status(400).json({ mensagem: "id_veiculo é obrigatório para veículos cadastrados." });
     }
 
-    // Para visitante, id_veiculo deve ser null
     const novoAcesso = await Acesso.create({
       id_veiculo: visitante ? null : id_veiculo,
       placa,
@@ -28,6 +22,18 @@ export const registrarEntrada = async (req, res) => {
       data_hora_entrada: new Date(),
       data_hora_saida: null,
     });
+
+    // Atualizar vagas
+    const vaga = await Vagas.findOne(); // pega a única vaga (ou você pode buscar por ID se tiver mais de uma)
+    if (vaga) {
+      if (vaga.total_vagas > 0) {
+        vaga.total_vagas -= 1;
+        vaga.vagas_ocupadas += 1;
+        await vaga.save();
+      } else {
+        return res.status(400).json({ mensagem: "Não há vagas disponíveis." });
+      }
+    }
 
     res.status(201).json(novoAcesso);
   } catch (erro) {
@@ -59,8 +65,17 @@ export const registrarSaida = async (req, res) => {
       return res.status(404).json({ mensagem: "Acesso sem saída não encontrado para essa placa." });
     }
 
+    // Registra saída
     acesso.data_hora_saida = new Date();
     await acesso.save();
+
+    // Libera vaga
+    const vaga = await Vagas.findOne();
+    if (vaga && vaga.vagas_ocupadas > 0) {
+      vaga.total_vagas += 1;
+      vaga.vagas_ocupadas -= 1;
+      await vaga.save();
+    }
 
     res.json({ mensagem: "Saída registrada com sucesso.", acesso });
 
