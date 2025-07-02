@@ -30,7 +30,5 @@ try{
     console.log(erro)
 }
 
-const PORT = process.env.PORT
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`)
-})
+
+export default app; // Exporta o app para ser usado nos testes
